@@ -231,7 +231,7 @@
     box-sizing: border-box;
   }
 
-  .tree-node-children-scroll > * {
+  .tree-node-children-scroll>* {
     /* Prevent flex children from shrinking */
     flex-shrink: 0 !important;
   }
@@ -251,5 +251,147 @@
 
   .tree-node-children-scroll::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
+  }
+
+  /* ReactFlow / Advanced Tree Styles */
+  .family-tree-canvas {
+    background-color: hsl(var(--background));
+  }
+
+  .family-tree-canvas .react-flow__viewport {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .family-tree-canvas .react-flow__edge-path {
+    stroke: hsl(220 90% 56%);
+    stroke-width: 3;
+    transition: stroke 0.2s ease-in-out, stroke-width 0.2s ease-in-out;
+    filter: drop-shadow(0 1px 2px hsl(220 90% 56% / 0.3));
+  }
+
+  .family-tree-canvas .react-flow__edge:hover .react-flow__edge-path {
+    stroke: hsl(220 90% 66%);
+    stroke-width: 4;
+    filter: drop-shadow(0 2px 4px hsl(220 90% 56% / 0.5));
+  }
+
+  .family-tree-canvas .react-flow__edge.selected .react-flow__edge-path {
+    stroke: hsl(220 90% 66%);
+    stroke-width: 4;
+    filter: drop-shadow(0 2px 4px hsl(220 90% 56% / 0.6));
+  }
+
+  .family-tree-canvas .react-flow__edge {
+    pointer-events: all;
+  }
+
+  /* Arrow markers */
+  .family-tree-canvas .react-flow__arrowhead {
+    fill: hsl(220 90% 56%);
+  }
+
+  .family-tree-canvas .react-flow__edge:hover .react-flow__arrowhead,
+  .family-tree-canvas .react-flow__edge.selected .react-flow__arrowhead {
+    fill: hsl(220 90% 66%);
+  }
+
+  .custom-family-node {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: all !important;
+  }
+
+  .custom-family-node:hover {
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 8px 16px hsl(var(--primary) / 0.15));
+  }
+
+  /* Active/Selected node highlight */
+  .react-flow__node.selected .custom-family-node {
+    transform: translateY(-4px) scale(1.03);
+    filter: drop-shadow(0 12px 24px hsl(var(--primary) / 0.25));
+  }
+
+  /* Expand/Collapse button styles */
+  .custom-family-node .group-hover\:opacity-100 {
+    pointer-events: all !important;
+  }
+
+  /* Ensure button stays visible when hovering over it */
+  .custom-family-node button:hover {
+    opacity: 1 !important;
+  }
+
+  /* Ensure all interactive elements in cards are clickable */
+  .custom-family-node button,
+  .custom-family-node [role="button"],
+  .custom-family-node a {
+    pointer-events: all !important;
+    cursor: pointer !important;
+  }
+
+  /* ReactFlow control buttons */
+  .react-flow__controls {
+    display: none;
+  }
+
+  /* Background patterns */
+  .react-flow__background {
+    background-color: hsl(var(--background));
+  }
+
+  .react-flow__background-pattern {
+    opacity: 0.3;
+  }
+
+  /* Make connection points visible */
+  .react-flow__handle {
+    width: 8px !important;
+    height: 8px !important;
+    background: hsl(220 90% 56%) !important;
+    border: 2px solid hsl(var(--background)) !important;
+    opacity: 1 !important;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .react-flow__node:hover .react-flow__handle {
+    transform: scale(1.2);
+  }
+
+  /* Edge labels if any */
+  .react-flow__edge-textwrapper {
+    pointer-events: all;
+  }
+
+  /* Smooth animations for tree transitions */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .react-flow__node {
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .react-flow__edge {
+    animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }

@@ -123,13 +123,7 @@ export function DeleteMemberDialog({
             onClick={handleDelete}
             disabled={isLoading}
           >
-            {isLoading
-              ? isSpouse
-                ? "Removing..."
-                : "Deleting..."
-              : isSpouse
-              ? "Remove Spouse"
-              : "Delete"}
+            {isSpouse ? "Remove Spouse" : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

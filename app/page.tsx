@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { FamilyTreeView } from "@/components/family-tree-view";
+import { AdvancedFamilyTreeView } from "@/components/advanced-family-tree-view";
 import { EmptyTreeView } from "@/components/empty-tree-view";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { hasTodayEvent } from "@/lib/date-utils";
+import { Sparkles, Grid3x3 } from "lucide-react";
 
 interface TreeNode {
   id: string;
@@ -37,8 +40,10 @@ interface TreeNode {
 export default function Home() {
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasAnyEvent, setHasAnyEvent] = useState(false);
+  const [useAdvancedView, setUseAdvancedView] = useState(true); // Default to advanced view
   const { isAuthenticated, isLoading: authLoading, logout, family } = useAuth();
   const router = useRouter();
 
@@ -56,7 +61,10 @@ export default function Home() {
 
   const fetchTree = async () => {
     try {
-      setIsLoading(true);
+      // Only show loading spinner on initial load
+      if (isInitialLoad) {
+        setIsLoading(true);
+      }
       const response = await apiClient.getTree();
       if (response.data) {
         setTreeData(response.data);
@@ -91,11 +99,15 @@ export default function Home() {
     } catch (err) {
       setError("Failed to load family tree");
     } finally {
-      setIsLoading(false);
+      if (isInitialLoad) {
+        setIsLoading(false);
+        setIsInitialLoad(false);
+      }
     }
   };
 
-  if (authLoading || isLoading) {
+  // Only show loading spinner during initial page load
+  if (authLoading || (isLoading && isInitialLoad)) {
     return (
       <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -170,6 +182,26 @@ export default function Home() {
                   {family.family_name}
                 </span>
               )}
+              {/* View Toggle */}
+              <Button
+                variant={useAdvancedView ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseAdvancedView(!useAdvancedView)}
+                className="gap-2"
+                title={useAdvancedView ? "Switch to Classic View" : "Switch to Advanced View"}
+              >
+                {useAdvancedView ? (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    <span className="hidden sm:inline">Advanced</span>
+                  </>
+                ) : (
+                  <>
+                    <Grid3x3 className="h-4 w-4" />
+                    <span className="hidden sm:inline">Classic</span>
+                  </>
+                )}
+              </Button>
               <button
                 onClick={logout}
                 className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors touch-manipulation px-2 py-1"
@@ -182,7 +214,9 @@ export default function Home() {
           <div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">Family Tree</h1>
             <p className="text-muted-foreground mt-0.5 sm:mt-1 text-xs sm:text-sm">
-              Tap on any family member to view details
+              {useAdvancedView
+                ? "Advanced canvas view with filters and smooth interactions"
+                : "Tap on any family member to view details"}
             </p>
           </div>
         </div>
@@ -194,10 +228,17 @@ export default function Home() {
           <EmptyTreeView onAddFirstMember={fetchTree} />
         ) : (
           treeData[0] && (
-            <FamilyTreeView 
-              rootMember={convertToLegacyFormat(treeData[0])} 
-              onTreeUpdate={fetchTree}
-            />
+            useAdvancedView ? (
+              <AdvancedFamilyTreeView
+                rootMember={convertToLegacyFormat(treeData[0])}
+                onTreeUpdate={fetchTree}
+              />
+            ) : (
+              <FamilyTreeView
+                rootMember={convertToLegacyFormat(treeData[0])}
+                onTreeUpdate={fetchTree}
+              />
+            )
           )
         )}
       </div>
@@ -215,15 +256,14 @@ function convertToLegacyFormat(node: TreeNode | null | undefined): any {
   const imagePath = node.image_path
     ? node.image_path.startsWith("http")
       ? node.image_path
-      : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${
-          node.image_path.startsWith("/") ? "" : "/"
-        }${node.image_path}`
+      : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${node.image_path.startsWith("/") ? "" : "/"
+      }${node.image_path}`
     : null; // Use null to trigger gender-based placeholder
 
   const memberId = node.id;
 
   // Ensure children is always an array
-  const children = Array.isArray(node.children) 
+  const children = Array.isArray(node.children)
     ? node.children.map((child) => convertToLegacyFormat(child))
     : [];
 
@@ -245,15 +285,13 @@ function convertToLegacyFormat(node: TreeNode | null | undefined): any {
     const spouseImagePath = node.spouse.image_path
       ? node.spouse.image_path.startsWith("http")
         ? node.spouse.image_path
-        : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${
-            node.spouse.image_path.startsWith("/") ? "" : "/"
-          }${node.spouse.image_path}`
+        : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${node.spouse.image_path.startsWith("/") ? "" : "/"
+        }${node.spouse.image_path}`
       : null;
 
     convertedMember.spouse = {
-      name: `${node.spouse.first_name}${
-        node.spouse.last_name ? " " + node.spouse.last_name : ""
-      }`,
+      name: `${node.spouse.first_name}${node.spouse.last_name ? " " + node.spouse.last_name : ""
+        }`,
       image: spouseImagePath,
       birthDate: node.spouse.birth_date || "",
       gender: node.spouse.gender,

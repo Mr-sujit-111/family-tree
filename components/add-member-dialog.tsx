@@ -98,7 +98,7 @@ export function AddMemberDialog({
       if (relationType === "spouse" && genderToUse) {
         defaultGender = genderToUse === "male" ? "female" : "male";
       }
-      
+
       setFormData({
         first_name: "",
         last_name: "",
@@ -209,7 +209,7 @@ export function AddMemberDialog({
       // If adding spouse, update the target member with spouse object
       if (relationType === "spouse") {
         const validSpouseMobileNumbers = spouseMobileNumbers.filter((num) => num.trim() !== "");
-        
+
         const updateData: any = {
           spouse: {
             first_name: formData.first_name,
@@ -595,9 +595,7 @@ export function AddMemberDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading 
-                ? (relationType === "spouse" ? "Adding Spouse..." : "Adding...") 
-                : (relationType === "spouse" ? "Add Spouse" : "Add Member")}
+              {relationType === "spouse" ? "Add Spouse" : "Add Member"}
             </Button>
           </DialogFooter>
         </form>
