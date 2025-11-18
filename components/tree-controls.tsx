@@ -67,15 +67,15 @@ export function TreeControls({
     return (
         <>
             {/* All Controls - Bottom Left */}
-            <div className="fixed bottom-4 left-4 z-50 flex gap-3">
+            <div className="fixed bottom-4 left-4 z-50 flex gap-3 touch-manipulation">
                 {/* Zoom & Direction Controls */}
-                <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-lg">
+                <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg p-2 shadow-lg touch-manipulation">
                     <div className="flex flex-col gap-1">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={onZoomIn}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 touch-manipulation"
                             title="Zoom In"
                         >
                             <ZoomIn className="h-3.5 w-3.5" />
@@ -84,7 +84,7 @@ export function TreeControls({
                             variant="ghost"
                             size="sm"
                             onClick={onZoomOut}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 touch-manipulation"
                             title="Zoom Out"
                         >
                             <ZoomOut className="h-3.5 w-3.5" />
@@ -93,7 +93,7 @@ export function TreeControls({
                             variant="ghost"
                             size="sm"
                             onClick={onFitView}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 touch-manipulation"
                             title="Fit View"
                         >
                             <Maximize2 className="h-3.5 w-3.5" />
@@ -103,7 +103,7 @@ export function TreeControls({
                             variant={currentDirection === 'vertical' ? 'default' : 'ghost'}
                             size="sm"
                             onClick={() => onDirectionChange(currentDirection === 'vertical' ? 'horizontal' : 'vertical')}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 touch-manipulation"
                             title={`Switch to ${currentDirection === 'vertical' ? 'Horizontal' : 'Vertical'}`}
                         >
                             <ArrowUpDown className={`h-3.5 w-3.5 ${currentDirection === 'horizontal' ? 'rotate-90' : ''} transition-transform`} />
@@ -113,7 +113,7 @@ export function TreeControls({
                             variant="ghost"
                             size="sm"
                             onClick={() => setIsFilterPanelVisible(!isFilterPanelVisible)}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 touch-manipulation"
                             title={isFilterPanelVisible ? 'Hide Filters' : 'Show Filters'}
                         >
                             {isFilterPanelVisible ? (
@@ -125,16 +125,16 @@ export function TreeControls({
                     </div>
                 </div>
 
-                {/* Compact Filter Panel */}
+                {/* Compact Filter Panel - Responsive */}
                 {isFilterPanelVisible && (
-                    <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg p-2.5 shadow-lg w-[180px] transition-all duration-300">
+                    <div className="bg-card/95 backdrop-blur-sm border border-border rounded-lg p-2.5 shadow-lg w-[180px] transition-all duration-300 touch-manipulation hidden sm:block md:w-[170px] lg:w-[180px]">
                         <div className="flex items-center justify-between mb-2">
                             <h3 className="text-xs font-semibold flex items-center gap-1.5">
                                 <Filter className="h-3 w-3" />
                                 Filters
                             </h3>
                             {hasActiveFilters && (
-                                <Badge variant="destructive" className="h-4 px-1.5 text-[10px]">
+                                <Badge variant="destructive" className="h-4 px-1.5 text-[10px] touch-manipulation">
                                     {activeFilterCount}
                                 </Badge>
                             )}
@@ -151,7 +151,7 @@ export function TreeControls({
                                         variant={!currentFilters.gender || currentFilters.gender === 'all' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => onFiltersChange({ ...currentFilters, gender: 'all' })}
-                                        className="h-7 px-2 text-[10px] flex-1"
+                                        className="h-7 px-2 text-[10px] flex-1 touch-manipulation"
                                         title="All"
                                     >
                                         All
@@ -160,7 +160,7 @@ export function TreeControls({
                                         variant={currentFilters.gender === 'male' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => onFiltersChange({ ...currentFilters, gender: currentFilters.gender === 'male' ? 'all' : 'male' })}
-                                        className="h-7 px-2 text-[10px] flex-1"
+                                        className="h-7 px-2 text-[10px] flex-1 touch-manipulation"
                                         title="Male"
                                     >
                                         M
@@ -169,7 +169,7 @@ export function TreeControls({
                                         variant={currentFilters.gender === 'female' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => onFiltersChange({ ...currentFilters, gender: currentFilters.gender === 'female' ? 'all' : 'female' })}
-                                        className="h-7 px-2 text-[10px] flex-1"
+                                        className="h-7 px-2 text-[10px] flex-1 touch-manipulation"
                                         title="Female"
                                     >
                                         F
@@ -183,7 +183,7 @@ export function TreeControls({
                                     variant={currentFilters.showDeceased !== false ? 'default' : 'outline'}
                                     size="sm"
                                     onClick={() => onFiltersChange({ ...currentFilters, showDeceased: currentFilters.showDeceased === false })}
-                                    className="w-full h-7 text-[10px] justify-start px-2"
+                                    className="w-full h-7 text-[10px] justify-start px-2 touch-manipulation"
                                 >
                                     <UserCheck className="mr-1.5 h-3 w-3" />
                                     Deceased
@@ -200,7 +200,7 @@ export function TreeControls({
                                         variant={!currentFilters.generation || currentFilters.generation === 'all' ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => onFiltersChange({ ...currentFilters, generation: 'all' })}
-                                        className="w-full h-6 text-[10px] justify-start px-2"
+                                        className="w-full h-6 text-[10px] justify-start px-2 touch-manipulation"
                                     >
                                         All
                                     </Button>
@@ -210,7 +210,7 @@ export function TreeControls({
                                             variant={currentFilters.generation === gen ? 'default' : 'outline'}
                                             size="sm"
                                             onClick={() => onFiltersChange({ ...currentFilters, generation: currentFilters.generation === gen ? 'all' : gen })}
-                                            className="w-full h-6 text-[10px] justify-start px-2"
+                                            className="w-full h-6 text-[10px] justify-start px-2 touch-manipulation"
                                         >
                                             Gen {gen}
                                         </Button>
@@ -223,7 +223,7 @@ export function TreeControls({
                                     variant="destructive"
                                     size="sm"
                                     onClick={() => onFiltersChange({ gender: 'all', showDeceased: true, generation: 'all' })}
-                                    className="w-full h-6 text-[10px] justify-start px-2"
+                                    className="w-full h-6 text-[10px] justify-start px-2 touch-manipulation"
                                 >
                                     <X className="mr-1.5 h-3 w-3" />
                                     Clear

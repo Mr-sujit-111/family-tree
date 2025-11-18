@@ -1,0 +1,69 @@
+/* Tree Expand/Collapse Animations */
+.tree-node-children-scroll {
+    transition: all 0.3s ease-in-out;
+}
+
+.tree-node-children-scroll.collapsing {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.tree-node-children-scroll.expanding {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Smooth hover transitions for expand/collapse buttons */
+.expand-collapse-button {
+    transition: all 0.2s ease-in-out;
+}
+
+.expand-collapse-button:hover {
+    transform: scale(1.1);
+}
+
+.expand-collapse-button:active {
+    transform: scale(0.95);
+}
+
+/* Touch-friendly styles */
+.touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom scrollbar for tree nodes */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary) / 0.5);
+}
+
+/* Responsive animations */
+@media (prefers-reduced-motion: reduce) {
+
+    .tree-node-children-scroll,
+    .expand-collapse-button {
+        transition: none;
+    }
+}
+
+/* Mobile-specific touch enhancements */
+@media (max-width: 640px) {
+    .expand-collapse-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}

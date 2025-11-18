@@ -257,7 +257,12 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
                 nodesFocusable={true}
                 edgesFocusable={true}
                 edgesReconnectable={false}
-                className="family-tree-canvas"
+                className="family-tree-canvas w-full h-full"
+                // Mobile touch optimizations
+                touch-action="manipulation"
+                preventScrolling={true}
+                zoomOnPinch={true}
+                panOnScrollSpeed={0.5}
             >
                 <Background
                     variant={BackgroundVariant.Dots}

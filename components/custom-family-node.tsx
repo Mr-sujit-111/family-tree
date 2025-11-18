@@ -33,12 +33,19 @@ export const CustomFamilyNode = memo(({ data }: NodeProps) => {
     const isVertical = direction === 'vertical';
 
     return (
-        <div className="custom-family-node relative group" style={{ pointerEvents: 'all' }}>
+        <div
+            className="custom-family-node relative group touch-manipulation"
+            style={{
+                pointerEvents: 'all',
+                touchAction: 'manipulation',
+                WebkitTapHighlightColor: 'transparent'
+            }}
+        >
             {/* Top/Left Handle for incoming connections */}
             <Handle
                 type="target"
                 position={isVertical ? Position.Top : Position.Left}
-                className="!w-3 !h-3 !bg-blue-500 !border-2 !border-background"
+                className=""
                 style={{ pointerEvents: 'none' }}
             />
 

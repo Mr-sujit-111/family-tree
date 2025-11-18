@@ -167,6 +167,45 @@
     -ms-user-select: text;
     user-select: text;
   }
+
+  /* Responsive utility classes */
+  .xs\:inline {
+    @media (min-width: 475px) {
+      display: inline !important;
+    }
+  }
+
+  .sm\:inline {
+    @media (min-width: 640px) {
+      display: inline !important;
+    }
+  }
+
+  .md\:inline {
+    @media (min-width: 768px) {
+      display: inline !important;
+    }
+  }
+
+  .lg\:inline {
+    @media (min-width: 1024px) {
+      display: inline !important;
+    }
+  }
+
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .max-w-\[80px\] {
+    max-width: 80px;
+  }
+
+  .max-w-\[120px\] {
+    max-width: 120px;
+  }
 }
 
 @layer components {
@@ -196,7 +235,7 @@
     background: hsl(var(--primary));
   }
 
-  /* Mobile scrollbar adjustments */
+  /* Responsive breakpoints */
   @media (max-width: 640px) {
     .custom-scrollbar::-webkit-scrollbar {
       height: 4px;
@@ -252,6 +291,108 @@
   .tree-node-children-scroll::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
   }
+
+  /* Fully Responsive Design */
+  /* Mobile first - Small screens (up to 640px) */
+  @media (max-width: 640px) {
+
+    /* Larger touch targets for mobile */
+    .touch-manipulation {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 8px;
+    }
+
+    /* Adjust button sizes for better touch targets */
+    .h-8.w-8 {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Increase spacing for mobile */
+    .react-flow__node {
+      margin: 8px;
+    }
+
+    /* Optimize card sizes for mobile */
+    .custom-family-node {
+      min-width: 150px;
+    }
+
+    /* Improve touch scrolling */
+    .family-tree-canvas {
+      touch-action: pan-x pan-y pinch-zoom;
+    }
+
+    /* Optimize filter panel for mobile */
+    .w-\[180px\] {
+      width: 150px;
+    }
+
+    /* Responsive text sizes */
+    .text-xs {
+      font-size: 0.65rem;
+    }
+
+    .text-sm {
+      font-size: 0.75rem;
+    }
+
+    /* Compact controls for mobile */
+    .p-2\.5 {
+      padding: 0.5rem;
+    }
+
+    .gap-1 {
+      gap: 0.25rem;
+    }
+
+    .gap-2 {
+      gap: 0.5rem;
+    }
+  }
+
+  /* Tablet - Medium screens (641px to 1024px) */
+  @media (min-width: 641px) and (max-width: 1024px) {
+
+    /* Optimize card sizes for tablets */
+    .custom-family-node {
+      min-width: 180px;
+    }
+
+    /* Adjust filter panel for tablets */
+    .w-\[180px\] {
+      width: 170px;
+    }
+
+    /* Better spacing for tablets */
+    .react-flow__node {
+      margin: 12px;
+    }
+
+    /* Enhanced touch targets for tablets */
+    .touch-manipulation {
+      min-height: 40px;
+      min-width: 40px;
+    }
+  }
+
+  /* Desktop - Large screens (1025px and above) */
+  @media (min-width: 1025px) {
+
+    /* Full size cards for desktop */
+    .custom-family-node {
+      min-width: 200px;
+    }
+
+    /* Standard filter panel for desktop */
+    .w-\[180px\] {
+      width: 180px;
+    }
+
+  }
+
+  /* ReactFlow / Advanced Tree Styles */
 
   /* ReactFlow / Advanced Tree Styles */
   .family-tree-canvas {

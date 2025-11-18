@@ -97,8 +97,8 @@ export function MemberCard({
     member.image || getPlaceholderImage(member.gender) || "/placeholder.svg";
   const spouseImage = member.spouse
     ? member.spouse.image ||
-      getPlaceholderImage(member.spouse.gender) ||
-      "/placeholder.svg"
+    getPlaceholderImage(member.spouse.gender) ||
+    "/placeholder.svg"
     : "/placeholder.svg";
 
   // Determine deceased status
@@ -128,15 +128,17 @@ export function MemberCard({
       )}
 
       <div
-        className={`relative flex flex-col rounded-lg sm:rounded-xl border-2 shadow-md hover:shadow-lg transition-all duration-300 min-w-[170px] w-[170px] sm:min-w-[200px] sm:w-[200px] lg:min-w-[240px] lg:w-[240px] overflow-visible select-none ${
-          hasEvent
+        className={`relative flex flex-col rounded-lg sm:rounded-xl border-2 shadow-md hover:shadow-lg transition-all duration-300 min-w-[150px] w-[150px] sm:min-w-[170px] sm:w-[170px] md:min-w-[200px] md:w-[200px] lg:min-w-[240px] lg:w-[240px] overflow-visible select-none touch-manipulation ${hasEvent
             ? "border-primary ring-2 sm:ring-4 ring-primary/30 bg-linear-to-br from-primary/10 via-card to-primary/10"
             : "border-border bg-card"
-        } ${
-          isClickable
+          } ${isClickable
             ? "cursor-pointer active:scale-[0.97] touch-manipulation"
             : ""
-        } ${className}`}
+          } ${className}`}
+        style={{
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent'
+        }}
       >
         {/* Add Parent Button - Top Center */}
         {onAddParent && !hasParent && (
@@ -231,17 +233,15 @@ export function MemberCard({
               <div className="flex items-center gap-1.5 sm:gap-2">
                 {/* Main Member Photo */}
                 <div
-                  className={`relative h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 overflow-hidden rounded-full border-2 shadow-md ${
-                    memberDeceased ? "border-yellow-500/60" : "border-primary"
-                  }`}
+                  className={`relative h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 overflow-hidden rounded-full border-2 shadow-md ${memberDeceased ? "border-yellow-500/60" : "border-primary"
+                    }`}
                 >
                   <Image
                     src={memberImage}
                     alt={member.name}
                     fill
-                    className={`object-cover ${
-                      memberDeceased ? "grayscale opacity-75" : ""
-                    }`}
+                    className={`object-cover ${memberDeceased ? "grayscale opacity-75" : ""
+                      }`}
                   />
                   {memberDeceased && (
                     <div className="absolute inset-0 flex items-center justify-center bg-yellow-400/20">
@@ -251,17 +251,15 @@ export function MemberCard({
                 </div>
                 {/* Spouse Photo - Smaller */}
                 <div
-                  className={`relative h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 overflow-hidden rounded-full border-2 shadow-md ${
-                    spouseDeceased ? "border-yellow-500/60" : "border-primary"
-                  }`}
+                  className={`relative h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 overflow-hidden rounded-full border-2 shadow-md ${spouseDeceased ? "border-yellow-500/60" : "border-primary"
+                    }`}
                 >
                   <Image
                     src={spouseImage}
                     alt={member.spouse.name}
                     fill
-                    className={`object-cover ${
-                      spouseDeceased ? "grayscale opacity-75" : ""
-                    }`}
+                    className={`object-cover ${spouseDeceased ? "grayscale opacity-75" : ""
+                      }`}
                   />
                   {spouseDeceased && (
                     <div className="absolute inset-0 flex items-center justify-center bg-yellow-400/20">
@@ -277,11 +275,10 @@ export function MemberCard({
                     <Gift className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-bounce" />
                   )}
                   <h3
-                    className={`font-semibold text-xs sm:text-sm truncate select-none ${
-                      memberDeceased
+                    className={`font-semibold text-xs sm:text-sm truncate select-none ${memberDeceased
                         ? "text-yellow-700 dark:text-yellow-500"
                         : "text-foreground"
-                    }`}
+                      }`}
                   >
                     {member.name}
                     {memberDeceased && <span className="ml-0.5 sm:ml-1">🪔</span>}
@@ -296,11 +293,10 @@ export function MemberCard({
                     <Gift className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-bounce" />
                   )}
                   <h3
-                    className={`font-semibold text-xs sm:text-sm truncate select-none ${
-                      spouseDeceased
+                    className={`font-semibold text-xs sm:text-sm truncate select-none ${spouseDeceased
                         ? "text-yellow-700 dark:text-yellow-500"
                         : "text-foreground"
-                    }`}
+                      }`}
                   >
                     {member.spouse.name}
                     {spouseDeceased && <span className="ml-0.5 sm:ml-1">🪔</span>}
@@ -322,17 +318,15 @@ export function MemberCard({
             /* Single Member Layout */
             <>
               <div
-                className={`relative h-14 w-14 sm:h-16 sm:w-16 lg:h-20 lg:w-20 overflow-hidden rounded-full border-2 shadow-md ${
-                  memberDeceased ? "border-yellow-500/60" : "border-primary"
-                }`}
+                className={`relative h-14 w-14 sm:h-16 sm:w-16 lg:h-20 lg:w-20 overflow-hidden rounded-full border-2 shadow-md ${memberDeceased ? "border-yellow-500/60" : "border-primary"
+                  }`}
               >
                 <Image
                   src={memberImage}
                   alt={member.name}
                   fill
-                  className={`object-cover ${
-                    memberDeceased ? "grayscale opacity-75" : ""
-                  }`}
+                  className={`object-cover ${memberDeceased ? "grayscale opacity-75" : ""
+                    }`}
                 />
                 {memberDeceased && (
                   <div className="absolute inset-0 flex items-center justify-center bg-yellow-400/20">
@@ -346,11 +340,10 @@ export function MemberCard({
                     <Gift className="h-3 w-3 sm:h-4 sm:w-4 text-primary animate-bounce" />
                   )}
                   <h3
-                    className={`font-semibold text-xs sm:text-sm truncate select-none ${
-                      memberDeceased
+                    className={`font-semibold text-xs sm:text-sm truncate select-none ${memberDeceased
                         ? "text-yellow-700 dark:text-yellow-500"
                         : "text-foreground"
-                    }`}
+                      }`}
                   >
                     {member.name}
                     {memberDeceased && <span className="ml-0.5 sm:ml-1">🪔</span>}
