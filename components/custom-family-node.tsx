@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import type { FamilyMember } from '@/data/family-data';
 import { MemberCard } from './member-card';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 export interface CustomFamilyNodeData {
     member: FamilyMember;
@@ -15,6 +16,10 @@ export interface CustomFamilyNodeData {
     onDelete?: (member: FamilyMember) => void;
     hasParent?: boolean;
     direction?: 'vertical' | 'horizontal';
+    // Expand/collapse functionality
+    onToggleExpand?: (member: FamilyMember) => void;
+    isExpanded?: boolean;
+    hasChildren?: boolean;
 }
 
 export const CustomFamilyNode = memo(({ data }: NodeProps) => {
@@ -28,9 +33,19 @@ export const CustomFamilyNode = memo(({ data }: NodeProps) => {
         onDelete,
         hasParent = true,
         direction = 'vertical',
+        onToggleExpand,
+        isExpanded,
+        hasChildren,
     } = data as unknown as CustomFamilyNodeData;
 
     const isVertical = direction === 'vertical';
+
+    const handleToggle = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (onToggleExpand) {
+            onToggleExpand(member);
+        }
+    };
 
     return (
         <div
@@ -41,6 +56,30 @@ export const CustomFamilyNode = memo(({ data }: NodeProps) => {
                 WebkitTapHighlightColor: 'transparent'
             }}
         >
+            {/* Expand/Collapse Button - Responsive Design with Direction Support */}
+            {hasChildren && onToggleExpand && (
+                <button
+                    onClick={handleToggle}
+                    className={`absolute w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 active:scale-95 transition-all duration-200 ease-in-out flex items-center justify-center z-20 border-2 border-background touch-manipulation md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100 ${
+                        isVertical 
+                            ? '-top-2.5 left-1/2 -translate-x-1/2'  // Vertical: above center
+                            : '-left-2.5 top-1/2 -translate-y-1/2'  // Horizontal: left center
+                    }`}
+                    aria-label={isExpanded ? "Collapse" : "Expand"}
+                    title={isExpanded ? "Collapse family branch" : "Expand family branch"}
+                >
+                    {isExpanded ? (
+                        <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-200 ${
+                            isVertical ? 'rotate-0' : 'rotate-90'
+                        }`} />
+                    ) : (
+                        <ChevronRight className={`h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-200 ${
+                            isVertical ? 'rotate-0' : 'rotate-90'
+                        }`} />
+                    )}
+                </button>
+            )}
+
             {/* Top/Left Handle for incoming connections */}
             <Handle
                 type="target"

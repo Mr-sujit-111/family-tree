@@ -26,8 +26,10 @@ import {
     filterFamilyTree,
     getAllGenerations,
     filterByGeneration,
+    applyExpansionState,
     type FilterOptions,
 } from '@/lib/tree-layout';
+import { loadTreeState, saveTreeState } from '@/lib/tree-state';
 
 interface AdvancedFamilyTreeViewProps {
     rootMember: FamilyMember;
@@ -39,11 +41,23 @@ const nodeTypes = {
 };
 
 function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamilyTreeViewProps) {
-    const [direction, setDirection] = useState<'vertical' | 'horizontal'>('vertical');
+    const [direction, setDirection] = useState<'vertical' | 'horizontal'>('horizontal'); // Changed default to vertical
     const [filters, setFilters] = useState<FilterOptions>({
         gender: 'all',
         showDeceased: true,
         generation: 'all',
+    });
+
+    // State for expanded nodes
+    const [expandedNodes, setExpandedNodes] = useState<Set<string>>(() => {
+        // Load expanded nodes from localStorage
+        if (typeof window !== 'undefined') {
+            const state = loadTreeState();
+            if (state) {
+                return new Set(state.expandedNodes);
+            }
+        }
+        return new Set([String(rootMember.id)]); // Root node is expanded by default
     });
 
     // Dialog states
@@ -60,11 +74,22 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
 
     const { fitView, zoomIn, zoomOut } = useReactFlow();
 
+    // Save expanded nodes to localStorage when they change
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const state = {
+                expandedNodes: Array.from(expandedNodes),
+                zoomLevel: 1, // We can add zoom level persistence later
+            };
+            saveTreeState(state);
+        }
+    }, [expandedNodes]);
+
     // Calculate max generation
     const maxGeneration = useMemo(() => getAllGenerations(rootMember), [rootMember]);
 
-    // Apply filters to tree data
-    const filteredMember = useMemo(() => {
+    // Apply filters and expansion state to tree data
+    const processedMember = useMemo(() => {
         let filtered: FamilyMember | null = rootMember;
 
         // Apply gender and deceased filters
@@ -77,21 +102,26 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
             filtered = filterByGeneration(filtered, filters.generation);
         }
 
+        // Apply expansion state
+        if (filtered) {
+            filtered = applyExpansionState(filtered, expandedNodes);
+        }
+
         return filtered || rootMember;
-    }, [rootMember, filters]);
+    }, [rootMember, filters, expandedNodes]);
 
     // Convert to ReactFlow elements
     const { nodes: initialNodes, edges: initialEdges } = useMemo(() => {
-        if (!filteredMember) return { nodes: [], edges: [] };
+        if (!processedMember) return { nodes: [], edges: [] };
 
-        return convertToReactFlowElements(filteredMember, {
+        return convertToReactFlowElements(processedMember, {
             direction,
             nodeWidth: 240,
             nodeHeight: 180,
             horizontalSpacing: 40,
             verticalSpacing: 60,
         });
-    }, [filteredMember, direction]);
+    }, [processedMember, direction]);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -110,11 +140,15 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
                 onDelete: handleDelete,
                 hasParent: node.id !== String(rootMember.id),
                 direction,
+                // Add toggle expand function to node data
+                onToggleExpand: handleToggleExpand,
+                isExpanded: expandedNodes.has(node.id),
+                hasChildren: checkHasChildren(node.id),
             },
         }));
         setNodes(updatedNodes as any);
         setEdges(initialEdges);
-    }, [initialNodes, initialEdges, direction, rootMember.id]);
+    }, [initialNodes, initialEdges, direction, rootMember.id, expandedNodes]);
 
     // Fit view when layout changes with smooth animation
     useEffect(() => {
@@ -131,6 +165,40 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
         }, 200);
         return () => clearTimeout(timer);
     }, [rootMember, fitView]);
+
+    // Check if a node has children in the original tree data
+    const checkHasChildren = useCallback((nodeId: string): boolean => {
+        // Find the member in the original tree data (not the processed one)
+        const findMember = (member: FamilyMember): boolean => {
+            if (String(member.id) === nodeId) {
+                const hasChildren = !!(member.children && member.children.length > 0);
+                return hasChildren;
+            }
+            if (member.children) {
+                for (const child of member.children) {
+                    if (findMember(child)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        return findMember(rootMember);
+    }, [rootMember]);
+
+    // Toggle expand/collapse for a node
+    const handleToggleExpand = useCallback((member: FamilyMember) => {
+        const memberId = String(member.id);
+        setExpandedNodes(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(memberId)) {
+                newSet.delete(memberId);
+            } else {
+                newSet.add(memberId);
+            }
+            return newSet;
+        });
+    }, []);
 
     const handleView = useCallback((member: FamilyMember) => {
         setSelectedMember(member);
@@ -258,11 +326,17 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
                 edgesFocusable={true}
                 edgesReconnectable={false}
                 className="family-tree-canvas w-full h-full"
-                // Mobile touch optimizations
+                // Enhanced mobile touch optimizations
                 touch-action="manipulation"
                 preventScrolling={true}
                 zoomOnPinch={true}
                 panOnScrollSpeed={0.5}
+                // Improved mobile drag behavior
+                nodeDragThreshold={0}
+                zoomActivationKeyCode={null}
+                panActivationKeyCode={null}
+                selectionKeyCode={null}
+                multiSelectionKeyCode={null}
             >
                 <Background
                     variant={BackgroundVariant.Dots}
