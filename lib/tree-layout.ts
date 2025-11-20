@@ -1,4 +1,4 @@
-import { Node, Edge } from '@xyflow/react';
+import { Node, Edge, MarkerType } from '@xyflow/react';
 import { hierarchy, tree } from 'd3-hierarchy';
 import type { FamilyMember } from '@/data/family-data';
 
@@ -67,9 +67,8 @@ export function convertToReactFlowElements(
             type: 'familyMember',
             position,
             data: { member: data.member },
-            draggable: false,
+            draggable: true,
         });
-
         // Create edges
         if (node.parent) {
             edges.push({
@@ -78,16 +77,17 @@ export function convertToReactFlowElements(
                 target: data.id,
                 type: 'smoothstep',
                 style: {
-                    stroke: 'hsl(220, 90%, 56%)',
+                    stroke: '#2563eb',
                     strokeWidth: 3,
+                    strokeDasharray: '5, 5',
                 },
-                animated: false,
-                selectable: true,
+                animated: true,
+                selectable: false,
                 markerEnd: {
-                    type: 'arrowclosed' as const,
-                    width: 22,
-                    height: 22,
-                    color: 'hsl(220, 90%, 56%)',
+                    type: MarkerType.ArrowClosed,
+                    width: 20,
+                    height: 20,
+                    color: '#2563eb',
                 },
             });
         }

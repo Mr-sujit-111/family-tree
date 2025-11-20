@@ -315,7 +315,7 @@ function AdvancedFamilyTreeViewInner({ rootMember, onTreeUpdate }: AdvancedFamil
                 maxZoom={2}
                 defaultViewport={{ x: 0, y: 0, zoom: 1 }}
                 proOptions={{ hideAttribution: true }}
-                nodesDraggable={false}
+                nodesDraggable={true}
                 nodesConnectable={false}
                 elementsSelectable={true}
                 panOnScroll

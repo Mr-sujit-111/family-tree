@@ -27,6 +27,8 @@ interface MemberCardProps {
   isClickable?: boolean;
   hasParent?: boolean;
   className?: string;
+  addParentPos?: "top" | "bottom" | "left" | "right";
+  addChildPos?: "top" | "bottom" | "left" | "right";
 }
 
 export function MemberCard({
@@ -41,6 +43,8 @@ export function MemberCard({
   isClickable = true,
   hasParent = true,
   className = "",
+  addParentPos = "top",
+  addChildPos = "bottom",
 }: MemberCardProps) {
   console.log(member?.name, " - ", JSON.stringify(member));
   const handleAddParentClick = (e: React.MouseEvent) => {
@@ -129,8 +133,8 @@ export function MemberCard({
 
       <div
         className={`relative flex flex-col rounded-lg sm:rounded-xl border-2 shadow-md hover:shadow-lg transition-all duration-300 min-w-[150px] w-[150px] sm:min-w-[170px] sm:w-[170px] md:min-w-[200px] md:w-[200px] lg:min-w-[240px] lg:w-[240px] overflow-visible select-none touch-manipulation ${hasEvent
-            ? "border-primary ring-2 sm:ring-4 ring-primary/30 bg-linear-to-br from-primary/10 via-card to-primary/10"
-            : "border-border bg-card"
+          ? "border-primary ring-2 sm:ring-4 ring-primary/30 bg-linear-to-br from-primary/10 via-card to-primary/10"
+          : "border-border bg-card"
           } ${isClickable
             ? "cursor-pointer active:scale-[0.97] touch-manipulation"
             : ""
@@ -140,12 +144,16 @@ export function MemberCard({
           WebkitTapHighlightColor: 'transparent'
         }}
       >
-        {/* Add Parent Button - Top Center */}
+        {/* Add Parent Button */}
         {onAddParent && !hasParent && (
           <Button
             variant="default"
             size="sm"
-            className="absolute -top-5 sm:-top-6 left-1/2 -translate-x-1/2 h-10 w-10 sm:h-9 sm:w-9 rounded-full p-0 z-30 bg-primary hover:bg-primary/90 shadow-lg touch-manipulation active:scale-95 border-2 border-background"
+            className={`absolute h-10 w-10 sm:h-9 sm:w-9 rounded-full p-0 z-30 bg-primary hover:bg-primary/90 shadow-lg touch-manipulation active:scale-95 border-2 border-background ${addParentPos === "top" ? "-top-5 sm:-top-6 left-1/2 -translate-x-1/2" :
+                addParentPos === "bottom" ? "-bottom-5 sm:-bottom-6 left-1/2 -translate-x-1/2" :
+                  addParentPos === "left" ? "top-1/2 -translate-y-1/2 -left-5 sm:-left-6" :
+                    "top-1/2 -translate-y-1/2 -right-5 sm:-right-6"
+              }`}
             onClick={handleAddParentClick}
             title="Add Parent"
             aria-label="Add Parent"
@@ -276,8 +284,8 @@ export function MemberCard({
                   )}
                   <h3
                     className={`font-semibold text-xs sm:text-sm truncate select-none ${memberDeceased
-                        ? "text-yellow-700 dark:text-yellow-500"
-                        : "text-foreground"
+                      ? "text-yellow-700 dark:text-yellow-500"
+                      : "text-foreground"
                       }`}
                   >
                     {member.name}
@@ -294,8 +302,8 @@ export function MemberCard({
                   )}
                   <h3
                     className={`font-semibold text-xs sm:text-sm truncate select-none ${spouseDeceased
-                        ? "text-yellow-700 dark:text-yellow-500"
-                        : "text-foreground"
+                      ? "text-yellow-700 dark:text-yellow-500"
+                      : "text-foreground"
                       }`}
                   >
                     {member.spouse.name}
@@ -341,8 +349,8 @@ export function MemberCard({
                   )}
                   <h3
                     className={`font-semibold text-xs sm:text-sm truncate select-none ${memberDeceased
-                        ? "text-yellow-700 dark:text-yellow-500"
-                        : "text-foreground"
+                      ? "text-yellow-700 dark:text-yellow-500"
+                      : "text-foreground"
                       }`}
                   >
                     {member.name}
@@ -364,12 +372,16 @@ export function MemberCard({
           )}
         </div>
 
-        {/* Add Child Button - Bottom Center - Only show if member has spouse */}
+        {/* Add Child Button */}
         {onAddChild && member.spouse && (
           <Button
             variant="default"
             size="sm"
-            className="absolute -bottom-5 sm:-bottom-6 left-1/2 -translate-x-1/2 h-10 w-10 sm:h-9 sm:w-9 rounded-full p-0 z-30 bg-primary hover:bg-primary/90 shadow-lg touch-manipulation active:scale-95 border-2 border-background"
+            className={`absolute h-10 w-10 sm:h-9 sm:w-9 rounded-full p-0 z-30 bg-primary hover:bg-primary/90 shadow-lg touch-manipulation active:scale-95 border-2 border-background ${addChildPos === "top" ? "-top-5 sm:-top-6 left-1/2 -translate-x-1/2" :
+                addChildPos === "bottom" ? "-bottom-5 sm:-bottom-6 left-1/2 -translate-x-1/2" :
+                  addChildPos === "left" ? "top-1/2 -translate-y-1/2 -left-5 sm:-left-6" :
+                    "top-1/2 -translate-y-1/2 -right-5 sm:-right-6"
+              }`}
             onClick={handleAddChildClick}
             title="Add Child"
             aria-label="Add Child"
